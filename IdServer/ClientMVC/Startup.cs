@@ -49,13 +49,6 @@ namespace ClientMVC
                 {
                     SecurityTokenValidated = async n =>
                     {
-                        //var id = n.AuthenticationTicket.Identity;
-
-                        //var givenName = id.FindFirst(Constants.ClaimTypes.Name);
-                        //var familyName = id.FindFirst(Constants.ClaimTypes.Name);
-                        //var sub = id.FindFirst(Constants.ClaimTypes.Subject);
-                        //var roles = id.FindAll(Constants.ClaimTypes.Role);
-
                         var nid = new ClaimsIdentity(
                             n.AuthenticationTicket.Identity.AuthenticationType,
                             Constants.ClaimTypes.GivenName,
@@ -66,11 +59,6 @@ namespace ClientMVC
 
                         var userInfo = await userInfoClient.GetAsync(n.ProtocolMessage.AccessToken);
                         userInfo.Claims.ToList().ForEach(ui => nid.AddClaim(new Claim(ui.Type, ui.Value)));
-
-                        //nid.AddClaim(givenName);
-                        //nid.AddClaim(familyName);
-                        //nid.AddClaim(sub);
-                        //nid.AddClaims(roles);
 
                         nid.AddClaim(new Claim("id_token", n.ProtocolMessage.IdToken));
 

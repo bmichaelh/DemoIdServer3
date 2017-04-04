@@ -32,12 +32,13 @@ namespace IdServer
                     },
                     Claims = new List<Claim>
                     {
-                        new Claim("ftlg_something", "some data")
+                        new Claim("customerRole", "somethingnew")
                     },
                     //AllowedScopes = new List<string>
                     //{
                     //    "openId",
-                    //    "profile"
+                    //    "profile",
+                    //    "roles"
                     //},
                     AllowAccessToAllScopes = true
                 },

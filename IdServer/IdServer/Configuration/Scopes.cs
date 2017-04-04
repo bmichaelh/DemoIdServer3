@@ -18,7 +18,7 @@ namespace IdServer
                     Claims = new List<ScopeClaim>
                     {
                         new ScopeClaim("role"),
-                        new ScopeClaim("ftlg_something")
+                        new ScopeClaim("customerRole")
                     }
                 },
                 new Scope
@@ -32,7 +32,7 @@ namespace IdServer
                     Claims = new List<ScopeClaim>
                     {
                         new ScopeClaim("role"),
-                        new ScopeClaim("ftlg_something")
+                        new ScopeClaim("customerRole")
                     }
                 }
             };
