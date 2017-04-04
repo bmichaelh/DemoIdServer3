@@ -21,10 +21,7 @@ namespace IdServer
 
     public class UserManager : UserManager<IdentityUser, string>
     {
-        public UserManager(UserStore userStore)
-            : base(userStore)
-        {
-        }
+        public UserManager(UserStore userStore) : base(userStore) { }
     }
 
     public class RoleManager : RoleManager<IdentityRole>

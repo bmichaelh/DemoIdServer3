@@ -5,7 +5,6 @@ using Owin;
 using System;
 using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
-using IdentityServer3.Core.Models;
 
 [assembly: OwinStartupAttribute(typeof(IdServer.Startup))]
 namespace IdServer
@@ -17,11 +16,13 @@ namespace IdServer
             string connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             ConfigureAuth(app);
 
+            
+
             app.Map("/identity", id => {
                 var factory = new IdentityServerServiceFactory()
                     .Configure(connectionString)
                     .UseInMemoryClients(Clients.Get())
-                    .UseInMemoryScopes(StandardScopes.All);
+                    .UseInMemoryScopes(Scopes.Get());
 
                 id.UseIdentityServer(new IdentityServerOptions
                 {
@@ -29,7 +30,12 @@ namespace IdServer
                     IssuerUri = (string)ConfigurationManager.AppSettings["options.issuerUri"],
                     SigningCertificate = LoadCertificate(),
 
-                    Factory = factory
+                    Factory = factory,
+
+                    AuthenticationOptions = new AuthenticationOptions
+                    {
+                        EnablePostSignOutAutoRedirect = true
+                    }
                 });
 
             });
