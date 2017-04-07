@@ -151,10 +151,14 @@ namespace IdServer.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await UserManager.AddClaimAsync(user.Id, new Claim("firstname", model.GivenName));
+                    await UserManager.AddClaimAsync(user.Id, new Claim("lastname", model.Surname));
+                    await UserManager.AddClaimAsync(user.Id, new Claim("name", model.GivenName + " " + model.Surname));
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -170,6 +174,55 @@ namespace IdServer.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        //
+        // GET: /Account/Register
+        [AllowAnonymous]
+        public ActionResult CreateUser()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+
+        public async Task<ActionResult> CreateUser(CreateUserViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, EmailConfirmed = true };
+
+                var result = await UserManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    await UserManager.AddClaimAsync(user.Id, new Claim("firstname", model.GivenName));
+                    await UserManager.AddClaimAsync(user.Id, new Claim("lastname", model.Surname));
+                    await UserManager.AddClaimAsync(user.Id, new Claim("name", model.GivenName + " " + model.Surname));
+                    await SendActivationEmail(user);
+                    return RedirectToAction("Index", "Home");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error);
+                }
+            }
+            return View(model);
+        }
+
+        private async Task SendActivationEmail(ApplicationUser user)
+        {
+            string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+
+            var callbackUrl = Url.Action(
+                "ResetPassword",
+                "Account",
+                new { userId = user.Id, code = code },
+                protocol: Request.Url.Scheme);
+
+            string body = @"<h4>Welcome to the application.</h4><p>To get started, please <a href=""" + callbackUrl + @""">activate</a> your account.</p><p>The account must be activated within 24 hours from receving this mail.</p>";
+
+            await UserManager.SendEmailAsync(user.Id, "Welcome to the Frontier Customer Extranet", body);
         }
 
         //

@@ -65,6 +65,17 @@ namespace IdServer.Models
     public class RegisterViewModel
     {
         [Required]
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
+        [Required]
+        [Display(Name = "First Name")]
+        public string GivenName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string Surname { get; set; }
+        [Required]
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
@@ -108,5 +119,25 @@ namespace IdServer.Models
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; }
+    }
+
+    public class CreateUserViewModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Required]
+        [Display(Name = "First Name")]
+        public string GivenName { get; set; }
+
+        [Required]
+        [Display(Name = "Last Name")]
+        public string Surname { get; set; }
+
+        
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
     }
 }

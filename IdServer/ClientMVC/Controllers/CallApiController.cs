@@ -13,6 +13,7 @@ namespace ClientMVC.Controllers
 {
     public class CallApiController : Controller
     {
+        [Authorize]
         //GET: CallApi/UserCredentials
         public async Task<ActionResult> UserCredentials()
         {
